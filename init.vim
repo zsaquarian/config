@@ -13,7 +13,7 @@ let g:mapleader="\<Space>"
 set ttimeoutlen=1 " make key presses show up faster
 set number relativenumber " show line numbers
 
-set clipboard=unnamed " use system clipboard
+set clipboard+=unnamedplus " use system clipboard
 set shortmess+=c " better completion menu
 set signcolumn=auto " only show signcolumn when there are things to show
 set tabstop=2 " Use two space tab
@@ -60,7 +60,7 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T'] " only show quickscope when tr
 " === LeaderF setup ==="
 let g:Lf_WindowPosition = 'popup'
 let g:Lf_PreviewInPopup = 1
-let g:Lf_StlSeparator = { 'left': "\u203a", 'right': "\u2029", 'font': "Hurmit NF Medium" }
+let g:Lf_StlSeparator = { 'left': "", 'right': "", 'font': "Hurmit NF Medium" }
 let g:Lf_PreviewResult = { 'Function': 0 }
 let g:Lf_ShortcutF = "<leader>ff"
 noremap <leader>bb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
@@ -70,13 +70,8 @@ syntax on " switch on syntax highlighting
 
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
-" === NERDTree settings ====
-
-let g:NERDTreeMinimalUI = 1 " Remove bookmarks and help text from NERDTree
-
-" Custom icons for expandable/expanded directories
-let g:NERDTreeDirArrowExpandable = '⬏'
-let g:NERDTreeDirArrowCollapsible = '⬎'
+" === NvimTree ===
+nnoremap <silent> <leader>tf :NvimTreeToggle<CR>
 
 " === NeoSnippet === "
 " Map <C-cr> as shortcut to activate snippet if available
@@ -155,16 +150,16 @@ let g:lightline = {
       \ }
       \ }
 
-augroup filetype_nerdtree
+augroup filetype_nvimtree
     au!
-    au FileType nerdtree call s:disable_lightline_on_nerdtree()
-    au WinEnter,BufWinEnter,TabEnter * call s:disable_lightline_on_nerdtree()
+    au FileType NvimTree call s:disable_lightline_on_nvimtree()
+    au WinEnter,BufWinEnter,TabEnter * call s:disable_lightline_on_nvimtree()
 augroup END
 
 " tell lightline to not show in nerdtree
-fu s:disable_lightline_on_nerdtree() abort
-    let nerdtree_winnr = index(map(range(1, winnr('$')), {_,v -> getbufvar(winbufnr(v), '&ft')}), 'nerdtree') + 1
-    call timer_start(0, {-> nerdtree_winnr && setwinvar(nerdtree_winnr, '&stl', '%#Normal#')})
+fu s:disable_lightline_on_nvimtree() abort
+    let nvimtree_winnr = index(map(range(1, winnr('$')), {_,v -> getbufvar(winbufnr(v), '&ft')}), 'NvimTree') + 1
+    call timer_start(0, {-> nvimtree_winnr && setwinvar(nvimtree_winnr, '&stl', '%#Normal#')})
 endfu
 
 " === Vista ===
@@ -172,7 +167,8 @@ let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
 
 let g:vista_default_executive = 'coc'
 
-nnoremap <silent> <leader>t :Vista!
+" toggle tags
+nnoremap <silent> <leader>tt :Vista!!<CR>
 
 " Emmet setup
 let g:user_emmet_leader_key = ','

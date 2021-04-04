@@ -31,4 +31,6 @@ Plug 'itchyny/lightline.vim' " statusline
 Plug 'mengelbrecht/lightline-bufferline' " shows buffers in lightline
 Plug 'unblevable/quick-scope' " shows how to jump to each word using t, f, T or F
 Plug 'liuchengxu/vista.vim' " tags!
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-tree.lua'
 call plug#end()
