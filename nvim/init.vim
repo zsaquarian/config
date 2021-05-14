@@ -10,6 +10,12 @@ set updatetime=50
 nnoremap <SPACE> <Nop>
 let g:mapleader="\<Space>"
 
+" don't *really* close buffers
+set hidden
+
+" allow all things using mouse
+set mouse=a
+
 set ttimeoutlen=1 " make key presses show up faster
 set number relativenumber " show line numbers
 
@@ -26,13 +32,6 @@ set textwidth=80 " 80 chars in a line
 set foldmethod=syntax " syntax highlighting items specify folds
 set foldcolumn=1 " defines 1 col at window left, to indicate folding
 let javaScript_fold=1 " activate folding by JS syntax
-
-" rainbow brackets
-let g:srcery_inverse_match_paren=1
-let g:rainbow_active=1
-let g:rainbow_load_separately = [
-\ [ '*.{html,htm,svelte}' , [], ]
-\ ]
 
 " nice indentline
 let g:indentLine_char = '▏' " Best chars for indentline ¦, ┆, │, ⎸, or ▏
@@ -156,11 +155,14 @@ let g:lightline = {
       \ 'colorscheme': 'srcery',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'modified', 'buffers'  ] ]
+      \             [ 'gitbranch' ],
+      \             [ 'readonly', 'modified', 'buffers'  ] ],
+      \   'right': [ [ 'lineinfo' ], [ 'percent', 'filetype' ],
+      \             [ 'coc_status', 'coc_ok', 'coc_errors', 'coc_warnings', 'coc_info' ] ]
       \ },
       \ 'component_function': {
       \   'gitbranch': 'LightlineGit',
-      \   'readonly': 'LightlineReadonly'
+      \   'readonly': 'LightlineReadonly',
       \ },
       \ 'component_expand': {
       \   'buffers': 'lightline#bufferline#buffers'
@@ -170,29 +172,7 @@ let g:lightline = {
       \ }
       \ }
 
-augroup filetype_minimap
-    au!
-    au FileType minimap call s:disable_lightline_on_minimap()
-    au WinEnter,BufWinEnter,TabEnter * call s:disable_lightline_on_minimap()
-augroup END
-
-" tell lightline to not show in minimap
-fu s:disable_lightline_on_minimap() abort
-    let minimap_winnr = index(map(range(1, winnr('$')), {_,v -> getbufvar(winbufnr(v), '&ft')}), 'minimap') + 1
-    call timer_start(0, {-> minimap_winnr && setwinvar(minimap_winnr, '&stl', '%#Normal#')})
-endfu
-
-augroup filetype_nvimtree
-    au!
-    au FileType NvimTree call s:disable_lightline_on_nvimtree()
-    au WinEnter,BufWinEnter,TabEnter * call s:disable_lightline_on_nvimtree()
-augroup END
-
-" tell lightline to not show in nvimtree
-fu s:disable_lightline_on_nvimtree() abort
-    let nvimtree_winnr = index(map(range(1, winnr('$')), {_,v -> getbufvar(winbufnr(v), '&ft')}), 'NvimTree') + 1
-    call timer_start(0, {-> nvimtree_winnr && setwinvar(nvimtree_winnr, '&stl', '%#Normal#')})
-endfu
+call lightline#coc#register()
 
 " === Vista ===
 let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
@@ -219,26 +199,31 @@ let g:startify_custom_header = [
 let g:vim_svelte_plugin_use_typescript = 1
 let g:vim_svelte_plugin_use_foldexpr = 1
 
+let g:sneak#label=1
+
+" terminal
+
+function s:RunNeoTerminal(cmd)
+  exec ":terminal " . a:cmd
+  " terminal runs by default in insert mode which kills the buffer after exit,
+  " let's change to normal mode
+  exec ":stopinsert"
+  keepalt file cmd
+endfunction
+command Tmux call s:RunNeoTerminal('tmux -u')
+
 " ================================================================================
 " =                                      UI                                      =
 " ================================================================================
 
-" show gutter darker
-let g:badwolf_darkgutter = 1
-set noshowmode " dont show mode in command area (airline already shows it)
+set noshowmode " dont show mode in command area (lightline already shows it)
 colo srcery " set colorscheme
+let g:srcery_inverse_match_paren=1 " colorscheme config
 set winbl=10 " make floating windows slightly transparent
 " cursor shapes
 let &t_SI = "\e[6 q"
 let &t_SI = "\e[6 q"
 let &t_EI = "\e[2 q"
-
-" let base16colorspace=256
-
-" if filereadable(expand("~/.vimrc_background"))
-"   let base16colorspace=256
-"   source ~/.vimrc_background
-" endif
 
 if exists('+termguicolors')
   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -251,11 +236,9 @@ au!
 autocmd VimEnter * silent hi Comment cterm=italic gui=italic
 autocmd FileType * let b:coc_additional_keywords = ["-"]
 " autocmd FileType svelte setlocal foldmethod=indent
-autocmd FileType vim,startify,coc-explorer silent IndentLinesDisable
+autocmd TermOpen * setlocal wrap nonumber norelativenumber filetype=terminal
+autocmd FileType vim,startify,coc-explorer,terminal silent IndentLinesDisable
 augroup END
-
-" Vim run
-let g:run_cmd_python = ['python3'] " run python files with python3
 
 " ================================================================================
 " =                               KEY BINDINGS                                   =
@@ -286,8 +269,8 @@ nnoremap <silent> <C-l> :call WinMove('l')<CR>
 
 " === COC shortcuts === "
 
-imap <a-cr> <esc><Plug>(coc-codeaction-cursor)a
-nmap <a-cr> <Plug>(coc-codeaction-cursor)
+imap <a-s> <esc><Plug>(coc-codeaction-cursor)a
+nmap <a-s> <Plug>(coc-codeaction-cursor)
 nmap <silent> <leader>FF :Prettier<CR>
 
 
@@ -302,9 +285,9 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-nnoremap <f1> :echo synIDattr(synID(line('.'), col('.'), 0), 'name')<cr>
-nnoremap <f2> :echo ("hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">")<cr>
-nnoremap <f3> :echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')<cr>
-nnoremap <f4> :exec 'syn list '.synIDattr(synID(line('.'), col('.'), 0), 'name')<cr>
+" === Terminal Stuff ===
+tnoremap <ESC><ESC> <C-\><C-n>
+tnoremap <C-h> <C-\><C-N><C-w>h
+tnoremap <C-j> <C-\><C-N><C-w>j
+tnoremap <C-k> <C-\><C-N><C-w>k
+tnoremap <C-l> <C-\><C-N><C-w>l

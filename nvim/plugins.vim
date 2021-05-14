@@ -31,5 +31,7 @@ Plug 'christoomey/vim-tmux-navigator' " allows c-[h, j, k, l] to work properly
 Plug 'srcery-colors/srcery-vim' " great colorscheme
 Plug 'APZelos/blamer.nvim' " git blame!
 Plug 'justinmk/vim-sneak' " easier easymotion
-Plug 'frazrepo/vim-rainbow' " Rainbow brackets!
+Plug 'josa42/vim-lightline-coc' " show coc stuff in lightline
+Plug 'michaelb/sniprun', {'do': 'bash install.sh'} " run code
+Plug 'pantharshit00/vim-prisma' 
 call plug#end()
