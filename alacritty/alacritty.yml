@@ -1,0 +1,62 @@
+font:
+  normal:
+    family: JetBrainsMonoMedium Nerd Font
+    # family: LigaSauceCodePro Nerd Font
+  size: 16
+  offset:
+    x: 0
+    y: 0
+  glyph_offset:
+    x: 0
+    y: 0
+background_opacity: 0.8
+
+hide_cursor_when_typing: true
+
+alt_send_esc: true
+
+window:
+  startup_mode: Maximized
+
+mouse:
+  hide_when_typing: true
+
+# Tmux in alacritty, with unicode!
+shell:
+  program: /usr/bin/tmux
+  args:
+    - -u
+
+# Colors (Srcery)
+colors:
+  # Default colors
+  primary:
+    background: '#1c1b19'
+    foreground: '#fce8c3'
+
+  # Cursor colors
+  cursor:
+    text: CellBackground
+    cursor: '#fbb829'
+
+  # Normal colors
+  normal:
+    black:   '#1c1b19'
+    red:     '#ef2f27'
+    green:   '#519f50'
+    yellow:  '#fbb829'
+    blue:    '#2c78bf'
+    magenta: '#e02c6d'
+    cyan:    '#0aaeb3'
+    white:   '#d0bfa1'
+
+  # Bright colors
+  bright:
+    black:   '#918175'
+    red:     '#f75341'
+    green:   '#98bc37'
+    yellow:  '#fed06e'
+    blue:    '#68a8e4'
+    magenta: '#ff5c8f'
+    cyan:    '#53fde9'
+    white:   '#fce8c3'
