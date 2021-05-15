@@ -33,7 +33,7 @@ for_window [class="^.*"] border pixel 1
 exec --no-startup-id nm-applet
 
 # polybar
-exec_always --no-startup-id ~/.config/polybar/launch.sh --grayblocks &
+exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 # compositor
 exec "bash ~/compton-script.sh"
@@ -48,7 +48,7 @@ exec sh ~/.fehbg
 bindsym $mod+z exec scrot ~/Pictures/%Y-%m-%d-%H-%M-%S.png
 
 # rofi
-bindsym $mod+e exec "rofi -show combi"
+bindsym $mod+e exec "rofi -combi-modi window,drun -show combi"
 
 bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 
