@@ -38,6 +38,9 @@ exec_always --no-startup-id ~/.config/polybar/launch.sh &
 # compositor
 exec "bash ~/compton-script.sh"
 
+# dunst
+exec_always --no-startup-id "bash ~/dunst.sh"
+
 # start teams when logging in
 # exec teams
 
@@ -48,7 +51,9 @@ exec sh ~/.fehbg
 bindsym $mod+z exec scrot ~/Pictures/%Y-%m-%d-%H-%M-%S.png
 
 # rofi
-bindsym $mod+e exec "rofi -combi-modi window,drun -show combi"
+bindsym $mod+e exec "rofi -combi-modi window,drun,calc -show combi"
+
+bindsym $mod+r exec "rofi -show run"
 
 bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 
@@ -134,11 +139,6 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
-
-# move things to the right place
-for_window [class="Firefox$"] move container to workspace $ws2
-for_window [class="chrome$"] move container to workspace $ws2
-for_window [class="teams$"] move container to workspace $ws3
 
 # switch to workspace
 bindsym $mod+ampersand workspace $ws1

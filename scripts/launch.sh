@@ -9,5 +9,8 @@ case $(file --mime-type "$@" -bL) in
       # Launch using your favorite application
       devour vlc "$@"
       ;;
+   image/*)
+      devour gwenview "$@"
+      ;;
    *) exit 1 ;;
 esac
