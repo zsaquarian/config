@@ -17,7 +17,7 @@ set $mod Mod1
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 8
+font pango:DejaVu Sans Mono 9
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -32,6 +32,9 @@ for_window [class="^.*"] border pixel 1
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
+# kde connect
+exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
+
 # polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
@@ -40,6 +43,8 @@ exec "bash ~/compton-script.sh"
 
 # dunst
 exec_always --no-startup-id "bash ~/dunst.sh"
+
+exec_always --no-startup-id "redshift-gtk"
 
 # start teams when logging in
 # exec teams
@@ -51,9 +56,9 @@ exec sh ~/.fehbg
 bindsym $mod+z exec scrot ~/Pictures/%Y-%m-%d-%H-%M-%S.png
 
 # rofi
-bindsym $mod+e exec "rofi -combi-modi window,drun,calc -show combi"
+bindsym $mod+e exec "rofi -combi-modi window,drun -show combi"
 
-bindsym $mod+r exec "rofi -show run"
+bindsym $mod+r exec "python /home/nahos/git/rofimoji/src/picker/rofimoji.py"
 
 bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 
@@ -67,6 +72,9 @@ bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# compose key
+exec --no-startup-id "xmodmap ~/.Xmodmap"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -129,10 +137,10 @@ bindsym $mod+a focus parent
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
-set $ws1 "code"
+set $ws1 "work"
 set $ws2 "browser"
 set $ws3 "communications"
-set $ws4 "graphics"
+set $ws4 "misc"
 set $ws5 "games"
 set $ws6 "6"
 set $ws7 "7"
@@ -200,3 +208,27 @@ bindsym $mod+p mode "resize"
 
 # Make picture in picture visible everywhere
 for_window [title="Picture-in-Picture"] sticky enable
+
+###############################
+#    Gruvbox Material Dark    #
+###############################
+set $bg       #282828
+set $fg       #d4be98
+set $red      #ea6962
+set $orange   #e78a4e
+set $green    #a9b665
+set $blue     #7daea3
+set $purple   #d3869b
+set $aqua     #89b482
+set $darkgray #282828
+
+#######################
+#    i3 appearance    #
+#######################
+#       Gruvbox Theme   brdr        bg          text    indictr     chld_brdr
+client.focused          $orange     $orange     $bg     $orange     $orange
+client.focused_inactive $aqua       $aqua       $fg     $aqua       $aqua
+client.unfocused        $bg         $bg         $fg     $bg         $bg
+client.urgent           $red        $red        $fg     $red        $red
+client.placeholder      $bg         $bg         $fg     $bg         $bg
+client.background       $bg

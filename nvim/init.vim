@@ -4,6 +4,9 @@ source ~/.config/nvim/plugins.vim " Plugins!
 " =                                EDITOR OPTIONS                              =
 " ==============================================================================
 
+" Keep undos even after reboots
+set undofile
+
 " makes everything snappier
 set updatetime=50
 " Use space as leader
@@ -15,6 +18,8 @@ set hidden
 
 " allow all things using mouse
 set mouse=a
+
+set showtabline=2
 
 set ttimeoutlen=1 " make key presses show up faster
 set number relativenumber " show line numbers
@@ -28,17 +33,14 @@ set expandtab " convert tab to spaces
 set encoding=utf-8 " Use utf-8
 set textwidth=80 " 80 chars in a line
 
-" folding
-set foldmethod=syntax " syntax highlighting items specify folds
 set foldcolumn=1 " defines 1 col at window left, to indicate folding
 let javaScript_fold=1 " activate folding by JS syntax
 
 " nice indentline
 let g:indentLine_char = '▏' " Best chars for indentline ¦, ┆, │, ⎸, or ▏
 let g:indentLine_defaultGroup = 'Comment'
+let g:indent_blankline_char_highlight_list=['red','yellow','green','cyan','blue']
 
-" echodoc setup
-let g:echodoc#enable_at_startup = 1
 " case options
 set smartcase
 set ignorecase
@@ -53,6 +55,10 @@ set splitright
 set backspace=eol,start " make backspace act like it normally does
 set shell=bash " use bash as shell because fish breaks a lot of plugins
 
+" spelling correction
+imap <c-f> <c-g>u<Esc>[s1z=`]a<c-g>u
+nmap <c-f> [s1z=<c-o>
+
 " j/k will move virtual lines (lines that wrap)
 noremap <silent> <expr> j (v:count == 0 ? 'gj' : 'j')
 noremap <silent> <expr> k (v:count == 0 ? 'gk' : 'k')
@@ -63,21 +69,9 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T'] " only show quickscope when tr
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 
-" minimap key binding
-nnoremap <silent> <leader>tm :MinimapToggle<CR>
-
 " tell better whitespace to ignore certain filetypes
-let g:better_whitespace_filetypes_blacklist=['minimap', 'NvimTree',
+let g:better_whitespace_filetypes_blacklist=['dashboard', 'NvimTree',
       \ 'diff', 'gitcommit', 'help']
-
-" === FZF ===
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump = 1
-let g:fzf_preview_window = ['right:30%:hidden', 'ctrl-/']
-
-nnoremap <silent> <leader>ff :Files<CR>
-nnoremap <silent> <leader>bb :Buffers<CR>
-nnoremap <silent> <leader>fl :Lines<CR>
 
 command! -nargs=0 Prettier :CocCommand prettier.formatFile
 
@@ -86,18 +80,6 @@ syntax on " switch on syntax highlighting
 
 " === CocExplorer ===
 nnoremap <silent> <leader>tf :CocCommand explorer<CR>
-
-" === NeoSnippet === "
-" Map <C-cr> as shortcut to activate snippet if available
-imap <C-cr> <Plug>(neosnippet_expand_or_jump)
-smap <C-cr> <Plug>(neosnippet_expand_or_jump)
-xmap <C-cr> <Plug>(neosnippet_expand_target)
-
-" Load custom snippets from snippets folder
-let g:neosnippet#snippets_directory='~/.config/nvim/snippets'
-
-" Hide conceal markers
-let g:neosnippet#enable_conceal_markers = 0
 
 " ==== COC Setup ====
 
@@ -152,13 +134,17 @@ function! LightlineGit()
 endfunction
 
 let g:lightline = {
-      \ 'colorscheme': 'srcery',
+      \ 'colorscheme': 'gruvbox_material',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch' ],
-      \             [ 'readonly', 'modified', 'buffers'  ] ],
+      \             [ 'readonly', 'filename', 'modified' ] ],
       \   'right': [ [ 'lineinfo' ], [ 'percent', 'filetype' ],
       \             [ 'coc_status', 'coc_ok', 'coc_errors', 'coc_warnings', 'coc_info' ] ]
+      \ },
+      \ 'tabline': {
+      \   'left': [ ['buffers'] ],
+      \   'right': [ ['bufnum'] ]
       \ },
       \ 'component_function': {
       \   'gitbranch': 'LightlineGit',
@@ -172,32 +158,17 @@ let g:lightline = {
       \ }
       \ }
 
+let g:lightline.separator = { 'left': '', 'right': '' }
+let g:lightline.subseparator = {'left': '', 'right': '' }
+
 call lightline#coc#register()
-
-" === Vista ===
-let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-
-let g:vista_default_executive = 'coc'
-
-" toggle tags
-nnoremap <silent> <leader>tt :Vista!!<CR>
 
 " Emmet setup
 let g:user_emmet_leader_key = ','
 
-" startify setup
-let g:startify_custom_header = [
-      \ '   _   _               _   _  _',
-      \ '  | \ | |             | | | |(_)',
-      \ '  |  \| |  ___   ___  | | | | _  _ __ ___',
-      \ '  | . ` | / _ \ / _ \ | | | || || |_ ` _ \',
-      \ '  | |\  ||  __/| (_) |\ \_/ /| || | | | | |',
-      \ '  \_| \_/ \___| \___/  \___/ |_||_| |_| |_|',
-      \ ]
-
 " svelte config
 let g:vim_svelte_plugin_use_typescript = 1
-let g:vim_svelte_plugin_use_foldexpr = 1
+let g:vim_svelte_plugin_use_foldexpr = 0
 
 let g:sneak#label=1
 
@@ -212,14 +183,61 @@ function s:RunNeoTerminal(cmd)
 endfunction
 command Tmux call s:RunNeoTerminal('tmux -u')
 
+let g:dashboard_default_executive = 'fzf'
+
+let g:dashboard_custom_header = [
+\ ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
+\ ' ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║',
+\ ' ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║',
+\ ' ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║',
+\ ' ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║',
+\ ' ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝',
+\]
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = {  }, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {  },  -- list of language that will be disabled
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = true,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+}
+EOF
+
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
+
 " ================================================================================
 " =                                      UI                                      =
 " ================================================================================
 
 set noshowmode " dont show mode in command area (lightline already shows it)
-colo srcery " set colorscheme
-let g:srcery_inverse_match_paren=1 " colorscheme config
-set winbl=10 " make floating windows slightly transparent
+
+" gruvbox material config
+let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_enable_bold = 1
+let g:gruvbox_material_transparent_background = 1
+let g:gruvbox_material_diagnostic_text_highlight = 1
+let g:gruvbox_material_statusline_style = 'mix'
+let g:gruvbox_material_palette = 'mix'
+
+colo gruvbox-material " set colorscheme
 " cursor shapes
 let &t_SI = "\e[6 q"
 let &t_SI = "\e[6 q"
@@ -237,7 +255,10 @@ autocmd VimEnter * silent hi Comment cterm=italic gui=italic
 autocmd FileType * let b:coc_additional_keywords = ["-"]
 " autocmd FileType svelte setlocal foldmethod=indent
 autocmd TermOpen * setlocal wrap nonumber norelativenumber filetype=terminal
-autocmd FileType vim,startify,coc-explorer,terminal silent IndentLinesDisable
+autocmd FileType vim,dashboard,coc-explorer,terminal silent IndentBlanklineDisable
+autocmd FileType markdown setlocal spell
+autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
+autocmd CursorMoved,CursorMovedI * silent IndentBlanklineRefresh
 augroup END
 
 " ================================================================================
@@ -247,6 +268,16 @@ augroup END
 " buffer next and buffer previous
 nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
+
+nmap <Leader>ss :<C-u>SessionSave<CR>
+nmap <Leader>sl :<C-u>SessionLoad<CR>
+nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
+nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
+nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
+nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
+nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
+nnoremap <silent> <Leader>fl :Lines<CR>
 
 " Move around easier
 function! WinMove(key)
@@ -284,6 +315,13 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+nnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 " === Terminal Stuff ===
 tnoremap <ESC><ESC> <C-\><C-n>

@@ -1,7 +1,10 @@
 font:
   normal:
-    family: JetBrainsMonoMedium Nerd Font
-    # family: LigaSauceCodePro Nerd Font
+    family: LigaSauceCodePro Nerd Font
+    # family: JetBrainsMonoMedium Nerd Font
+    # family: Hurmit Nerd Font
+    # family: Fira Code iScript
+    # family: RobotoMono Nerd Font Mono
   size: 16
   offset:
     x: 0
@@ -27,36 +30,25 @@ shell:
   args:
     - -u
 
-# Colors (Srcery)
 colors:
-  # Default colors
   primary:
-    background: '#1c1b19'
-    foreground: '#fce8c3'
-
-  # Cursor colors
-  cursor:
-    text: CellBackground
-    cursor: '#fbb829'
-
-  # Normal colors
+    background: '0x1d2021'
+    foreground: '0xd4be98'
   normal:
-    black:   '#1c1b19'
-    red:     '#ef2f27'
-    green:   '#519f50'
-    yellow:  '#fbb829'
-    blue:    '#2c78bf'
-    magenta: '#e02c6d'
-    cyan:    '#0aaeb3'
-    white:   '#d0bfa1'
-
-  # Bright colors
+    black:   '0x32302f'
+    red:     '0xea6962'
+    green:   '0xa9b665'
+    yellow:  '0xd8a657'
+    blue:    '0x7daea3'
+    magenta: '0xd3869b'
+    cyan:    '0x89b482'
+    white:   '0xd4be98'
   bright:
-    black:   '#918175'
-    red:     '#f75341'
-    green:   '#98bc37'
-    yellow:  '#fed06e'
-    blue:    '#68a8e4'
-    magenta: '#ff5c8f'
-    cyan:    '#53fde9'
-    white:   '#fce8c3'
+    black:   '0x32302f'
+    red:     '0xea6962'
+    green:   '0xa9b665'
+    yellow:  '0xd8a657'
+    blue:    '0x7daea3'
+    magenta: '0xd3869b'
+    cyan:    '0x89b482'
+    white:   '0xd4be98'
