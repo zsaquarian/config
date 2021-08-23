@@ -39,7 +39,7 @@ exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 # compositor
-exec "bash ~/compton-script.sh"
+exec "compton"
 
 # dunst
 exec_always --no-startup-id "bash ~/dunst.sh"

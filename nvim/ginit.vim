@@ -1,11 +1,11 @@
 " =================
 "  GUI - Settings
 " =================
-set guifont=JetBrainsMonoMedium\ Nerd\ Font:h21
+set guifont=LigaSauceCodePro\ Nerd\ Font:h21
 set linespace=1
 
 let g:neovide_refresh_rate=60
-let g:neovide_transparency=0.9
+let g:neovide_transparency=0.7
 let g:neovide_no_idle=v:false
 let g:neovide_fullscreen=v:false
 let g:neovide_cursor_animation_length=0.13
