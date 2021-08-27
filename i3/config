@@ -58,7 +58,7 @@ bindsym $mod+z exec scrot ~/Pictures/%Y-%m-%d-%H-%M-%S.png
 # rofi
 bindsym $mod+e exec "rofi -combi-modi window,drun -show combi"
 
-bindsym $mod+r exec "python /home/nahos/git/rofimoji/src/picker/rofimoji.py"
+bindsym $mod+r exec "rofi -modi run -show run"
 
 bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 
@@ -68,9 +68,9 @@ gaps outer 5
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec ~/volume.sh up
+bindsym XF86AudioLowerVolume exec ~/volume.sh down
+bindsym XF86AudioMute exec ~/volume.sh mute
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # compose key

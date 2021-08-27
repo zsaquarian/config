@@ -25,7 +25,6 @@ set -x JAVA_HOME /usr/lib/jvm/java-14-openjdk-amd64
 # add  stuff installed with yarn to path
 set PATH "$PATH:"(yarn global bin)""
 
-pyenv init - | source
 if status is-interactive
   mcfly init fish | source
   mcfly_key_bindings
