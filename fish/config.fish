@@ -18,12 +18,11 @@ set fish_plugins bang-bang
 set -x FZF_DEFAULT_COMMAND 'rg --files --hidden --follow --ignore-vcs'
 set -x FZF_DEFAULT_OPTS '--height 96% --reverse'
 set -x DENO_INSTALL ~/.deno
-set -x PATH $DENO_INSTALL/bin:$PATH
-set -Ux PYENV_ROOT $HOME/git/pyenv
-set -x fish_user_paths $ANDROID_HOME/platform-tools $PYENV_ROOT/bin
 set -x JAVA_HOME /usr/lib/jvm/java-14-openjdk-amd64
-# add  stuff installed with yarn to path
-set PATH "$PATH:"(yarn global bin)""
+# add  stuff installed with yarn and linuxbrew to path
+set -x PATH (yarn global bin) $PATH
+set -x PATH /home/linuxbrew/.linuxbrew/bin/ $PATH
+set -x fish_complete_path /home/linuxbrew/.linuxbrew/share/fish/vendor_completions.d $fish_complete_path
 
 if status is-interactive
   mcfly init fish | source

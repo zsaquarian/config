@@ -1,4 +1,5 @@
 source ~/.config/nvim/plugins.vim " Plugins!
+source ~/.config/nvim/ginit.vim " GUI stuff
 
 " ==============================================================================
 " =                                EDITOR OPTIONS                              =
@@ -73,15 +74,18 @@ let &t_ZR="\e[23m"
 let g:better_whitespace_filetypes_blacklist=['dashboard', 'NvimTree',
       \ 'diff', 'gitcommit', 'help']
 
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" === Telescope ===
+
+lua << EOF
+require('telescope').load_extension('coc')
+EOF
+
+" === COC config ===
 
 filetype plugin indent on
 syntax on " switch on syntax highlighting
 
-" === CocExplorer ===
-nnoremap <silent> <leader>tf :CocCommand explorer<CR>
-
-" ==== COC Setup ====
+nnoremap <a-s> :Telescope coc line_code_actions<CR>
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -96,72 +100,6 @@ inoremap <silent><expr> <Tab>
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <silent><expr> <c-space> coc#refresh()
-
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-autocmd CursorHold * silent call CocActionAsync('highlight')
-nmap <F2> <Plug>(coc-rename)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-nmap <leader>fq  <Plug>(coc-fix-current)
-
-" tell bufferline not to echo
-let g:bufferline_echo = 0
-
-" === Lightline ===
-function! LightlineReadonly()
-  return &readonly && &filetype !~# '\v(help|NvimTree)' ? 'RO' : ''
-endfunction
-
-function! LightlineGit()
-  let branch = FugitiveHead()
-  return substitute(' ', '$', branch, '')
-endfunction
-
-let g:lightline = {
-      \ 'colorscheme': 'gruvbox_material',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch' ],
-      \             [ 'readonly', 'filename', 'modified' ] ],
-      \   'right': [ [ 'lineinfo' ], [ 'percent', 'filetype' ],
-      \             [ 'coc_status', 'coc_ok', 'coc_errors', 'coc_warnings', 'coc_info' ] ]
-      \ },
-      \ 'tabline': {
-      \   'left': [ ['buffers'] ],
-      \   'right': [ ['bufnum'] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'LightlineGit',
-      \   'readonly': 'LightlineReadonly',
-      \ },
-      \ 'component_expand': {
-      \   'buffers': 'lightline#bufferline#buffers'
-      \ },
-      \ 'component_type': {
-      \   'buffers': 'tabsel'
-      \ }
-      \ }
-
-let g:lightline.separator = { 'left': '', 'right': '' }
-let g:lightline.subseparator = {'left': '', 'right': '' }
-
-call lightline#coc#register()
 
 " Emmet setup
 let g:user_emmet_leader_key = ','
@@ -183,7 +121,7 @@ function s:RunNeoTerminal(cmd)
 endfunction
 command Tmux call s:RunNeoTerminal('tmux -u')
 
-let g:dashboard_default_executive = 'fzf'
+let g:dashboard_default_executive = 'telescope'
 
 let g:dashboard_custom_header = [
 \ ' ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗',
@@ -196,6 +134,12 @@ let g:dashboard_custom_header = [
 
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
+  context_commentstring = {
+    enable = true
+  },
+  autotag = {
+    enable = true,
+  },
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
   ignore_install = {  }, -- List of parsers to ignore installing
   highlight = {
@@ -226,7 +170,23 @@ set foldexpr=nvim_treesitter#foldexpr()
 " =                                      UI                                      =
 " ================================================================================
 
-set noshowmode " dont show mode in command area (lightline already shows it)
+set noshowmode " dont show mode in command area (statusline already shows it)
+
+" === Lualine ===
+lua << EOF
+require('lualine').setup{
+  options = { theme = 'gruvbox' },
+  sections = { lualine_a = { 'mode' }, lualine_b = { 'branch' }, lualine_c = { 'filename' }, lualine_x = { { 'diagnostics', sources = { 'coc' } } }, lualine_y = { 'filetype' }, lualine_z = { 'location', 'progress' } }
+}
+EOF
+
+" === Neoscroll ===
+lua << EOF
+require('neoscroll').setup({
+  mappings = {'<C-u>', '<C-d>', '<C-b>', '<C-f>', 'j', 'k',
+              '<C-y>', '<C-e>', 'zt', 'zz', 'zb', 'gj', 'gk'},
+})
+EOF
 
 " gruvbox material config
 let g:gruvbox_material_background = 'hard'
@@ -249,16 +209,24 @@ if exists('+termguicolors')
   set termguicolors
 endif
 
+" undotree
+let g:undotree_WindowLayout = 3
+let g:undotree_ShortIndicators = 1
+
+" blameline
+let g:blameLineVirtualTextFormat = ' | %s | '
+let g:blameLineGitFormat = '%an, %ar - %s'
+
 augroup myCmds
 au!
 autocmd VimEnter * silent hi Comment cterm=italic gui=italic
 autocmd FileType * let b:coc_additional_keywords = ["-"]
 " autocmd FileType svelte setlocal foldmethod=indent
 autocmd TermOpen * setlocal wrap nonumber norelativenumber filetype=terminal
-autocmd FileType vim,dashboard,coc-explorer,terminal silent IndentBlanklineDisable
+autocmd FileType vim,dashboard,terminal silent IndentBlanklineDisable
 autocmd FileType markdown setlocal spell
-autocmd BufWritePost,TextChanged,TextChangedI * call lightline#update()
 autocmd CursorMoved,CursorMovedI * silent IndentBlanklineRefresh
+autocmd BufEnter * silent EnableBlameLine
 augroup END
 
 " ================================================================================
@@ -269,6 +237,12 @@ augroup END
 nnoremap <leader>bn :bn<CR>
 nnoremap <leader>bp :bp<CR>
 
+nnoremap <leader>bw :BufferWipe<CR>
+nnoremap <leader>bd :BufferDelete<CR>
+nnoremap ;q :BufferClose<CR>
+
+nnoremap <leader>tf :NvimTreeToggle<CR>
+
 nmap <Leader>ss :<C-u>SessionSave<CR>
 nmap <Leader>sl :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
@@ -277,7 +251,7 @@ nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
-nnoremap <silent> <Leader>fl :Lines<CR>
+nnoremap <silent> <Leader>fl :Telescope current_buffer_fuzzy_find<CR>
 
 " Move around easier
 function! WinMove(key)
@@ -304,7 +278,6 @@ imap <a-s> <esc><Plug>(coc-codeaction-cursor)a
 nmap <a-s> <Plug>(coc-codeaction-cursor)
 nmap <silent> <leader>FF :Prettier<CR>
 
-
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -323,9 +296,14 @@ inoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? "\<c-r>=coc#float
 vnoremap <silent><nowait><expr> <C-d> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
 vnoremap <silent><nowait><expr> <C-u> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
+inoremap <silent><expr> <c-space> coc#refresh()
+
 " === Terminal Stuff ===
 tnoremap <ESC><ESC> <C-\><C-n>
 tnoremap <C-h> <C-\><C-N><C-w>h
 tnoremap <C-j> <C-\><C-N><C-w>j
 tnoremap <C-k> <C-\><C-N><C-w>k
 tnoremap <C-l> <C-\><C-N><C-w>l
+
+" === Undo tree ===
+nnoremap <F5> :UndotreeToggle<CR>

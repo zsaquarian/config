@@ -26,7 +26,7 @@ font pango:DejaVu Sans Mono 9
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-for_window [class="^.*"] border pixel 1
+for_window [class="^.*"] border pixel 3
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -34,17 +34,21 @@ exec --no-startup-id nm-applet
 
 # kde connect
 exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
+exec --no-startup-id kdeconnect-indicator
 
 # polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 # compositor
-exec "compton"
+exec "picom &"
 
 # dunst
 exec_always --no-startup-id "bash ~/dunst.sh"
 
-exec_always --no-startup-id "redshift-gtk"
+exec --no-startup-id "redshift-gtk"
+
+# input methods
+exec --no-startup-id "ibus-daemon"
 
 # start teams when logging in
 # exec teams
@@ -66,12 +70,14 @@ bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 gaps inner 10
 gaps outer 5
 
+# volume icon
+exec --no-startup-id volumeicon
+
 # Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec ~/volume.sh up
-bindsym XF86AudioLowerVolume exec ~/volume.sh down
-bindsym XF86AudioMute exec ~/volume.sh mute
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 # compose key
 exec --no-startup-id "xmodmap ~/.Xmodmap"
@@ -133,7 +139,7 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+d focus child
 
 # Define names for default workspaces for which we configure key bindings later on.
 # We use variables to avoid repeating the names in multiple places.
