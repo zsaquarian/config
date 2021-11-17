@@ -32,12 +32,17 @@ for_window [class="^.*"] border pixel 3
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
-# kde connect
-exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
-exec --no-startup-id kdeconnect-indicator
+# mount storage partition
+exec --no-startup-id "udisksctl mount -b /dev/sda7"
 
 # polybar
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
+
+# kde connect
+exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
+
+# bluetooth
+exec --no-startup-id blueman-applet
 
 # compositor
 exec "picom &"
@@ -45,16 +50,24 @@ exec "picom &"
 # dunst
 exec_always --no-startup-id "bash ~/dunst.sh"
 
+# night mode with warmer colors
 exec --no-startup-id "redshift-gtk"
+
+# kde connect indicator
+exec --no-startup-id "kdeconnect-indicator"
 
 # input methods
 exec --no-startup-id "ibus-daemon"
 
-# start teams when logging in
-# exec teams
+# volume icon
+exec --no-startup-id volumeicon
 
 # Set background
 exec sh ~/.fehbg
+
+# run apps and put them in the right place
+exec --no-startup-id "bash ~/.config/i3/layouts.sh"
+exec --no-startup-id "bash ~/.config/i3/apps.sh &"
 
 # Screen shotter
 bindsym $mod+z exec scrot ~/Pictures/%Y-%m-%d-%H-%M-%S.png
@@ -69,9 +82,6 @@ bindsym $mod+c exec "rofi -show calc -modi calc -no-show-match -no-sort"
 # Gaps
 gaps inner 10
 gaps outer 5
-
-# volume icon
-exec --no-startup-id volumeicon
 
 # Use pactl to adjust volume in PulseAudio.
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
@@ -238,3 +248,8 @@ client.unfocused        $bg         $bg         $fg     $bg         $bg
 client.urgent           $red        $red        $fg     $red        $red
 client.placeholder      $bg         $bg         $fg     $bg         $bg
 client.background       $bg
+
+# Assignments
+assign [class="^Microsoft Teams - Preview$"] workspace communications
+assign [class="^discord$"] workspace communications
+assign [class="^Signal$"] workspace communications

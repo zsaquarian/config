@@ -1,7 +1,6 @@
 " =================
 "  GUI - Settings
 " =================
-set guifont=LigaSauceCodePro\ Nerd\ Font:h16
 set linespace=1
 
 if exists("g:neovide")

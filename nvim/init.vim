@@ -234,8 +234,8 @@ augroup END
 " ================================================================================
 
 " buffer next and buffer previous
-nnoremap <leader>bn :bn<CR>
-nnoremap <leader>bp :bp<CR>
+nnoremap <leader>bn :BufferNext<CR>
+nnoremap <leader>bp :BufferPrevious<CR>
 
 nnoremap <leader>bw :BufferWipe<CR>
 nnoremap <leader>bd :BufferDelete<CR>
@@ -281,6 +281,18 @@ nmap <silent> <leader>FF :Prettier<CR>
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+nmap <F2> <Plug>(coc-rename)
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)

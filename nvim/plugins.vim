@@ -35,4 +35,6 @@ Plug 'rafamadriz/friendly-snippets' " snippets for above
 Plug 'mbbill/undotree' " fancy looking undotree to visualize undo states
 Plug 'tveskag/nvim-blame-line' " git blame in virtual text
 Plug 'karb94/neoscroll.nvim' " smooth scrolling
+Plug 'wakatime/vim-wakatime' " code stats
+Plug 'morhetz/gruvbox'
 call plug#end()
