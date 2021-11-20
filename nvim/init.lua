@@ -1,0 +1,6 @@
+require('plugins')
+require('utils')
+require('editor_settings')
+require('plugin_settings')
+require('ui')
+require('key_bindings')
