@@ -52,3 +52,7 @@ vim.o.splitright = true
 
 vim.o.backspace='eol,start' -- make backspace act like it normally does
 vim.o.shell='bash' -- use bash as shell because fish breaks a lot of plugins
+
+vim.g.python3_host_prog='/home/linuxbrew/.linuxbrew/bin/python3'
+
+vim.cmd( "set formatoptions-=t" ) -- dont auto line break when exceeding 80 chars

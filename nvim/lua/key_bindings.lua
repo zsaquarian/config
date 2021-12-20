@@ -58,6 +58,8 @@ nmap("[g", "<cmd>Lspsaga diagnostic_jump_prev<CR>")
 nmap("<C-u>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
 nmap("<C-d>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
 
+nmap("<F2>", "<cmd>lua vim.lsp.buf.rename()<CR>")
+
 -- === Terminal Stuff ===
 map("t", "<ESC><ESC>", "<C-\\><C-n>")
 map("t", "<C-h>", "<C-\\><C-N><C-w>h" )

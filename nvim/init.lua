@@ -1,6 +1,6 @@
 require('plugins')
 require('utils')
 require('editor_settings')
-require('plugin_settings')
 require('ui')
+require('plugin_settings')
 require('key_bindings')

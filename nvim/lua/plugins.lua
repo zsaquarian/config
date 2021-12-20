@@ -6,6 +6,7 @@ return require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Packer can manage itself
   use 'jiangmiao/auto-pairs' -- make brackets and quotes pair up
   use 'lewis6991/gitsigns.nvim' -- show git things in the gutter
+  use 'tpope/vim-fugitive' -- more git stuff
   use { -- LSP things
     'neovim/nvim-lspconfig',
     'williamboman/nvim-lsp-installer',
@@ -58,4 +59,6 @@ return require('packer').startup(function(use)
   use 'mbbill/undotree' -- fancy looking undotree to visualize undo states
   use 'tveskag/nvim-blame-line' -- git blame in virtual text
   use 'karb94/neoscroll.nvim' -- smooth scrolling
+  use { 'iamcco/markdown-preview.nvim', run = 'cd app && yarn install' }
+  use 'onsails/lspkind-nvim'
 end)

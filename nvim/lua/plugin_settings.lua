@@ -35,9 +35,9 @@ lsp_installer.on_server_ready(function(server)
     local opts = {}
 
     -- (optional) Customize the options passed to the server
-    -- if server.name == "tsserver" then
-    --     opts.root_dir = function() ... end
-    -- end
+    if server.name == "tsserver" then
+        opts.root_dir = function() return vim.loop.cwd() end
+    end
 
     -- This setup() function is exactly the same as lspconfig's setup function.
     -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
@@ -84,8 +84,15 @@ require "lsp_signature".setup()
 
 vim.cmd( "set completeopt=menu,menuone,noselect" )
 
-local cmp = require'cmp'
-  cmp.setup({
+local cmp = require('cmp')
+local lspkind = require('lspkind')
+  cmp.setup{
+formatting = {
+    format = lspkind.cmp_format({
+      with_text = false, -- do not show text alongside icons
+      maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+    })
+  },
     snippet = {
       -- REQUIRED - you must specify a snippet engine
       expand = function(args)
@@ -116,8 +123,9 @@ local cmp = require'cmp'
       -- { name = 'snippy' }, -- For snippy users.
     }, {
       { name = 'buffer' },
+      { name = 'path' }
     })
-  })
+  }
 
   -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
   cmp.setup.cmdline('/', {
@@ -138,9 +146,10 @@ local cmp = require'cmp'
   -- Setup lspconfig.
   local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
   -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-  require('lspconfig')['tsserver'].setup {
-    capabilities = capabilities
-  }
+  -- require('lspconfig')['tsserver'].setup {
+  --   capabilities = capabilities,
+  --   root_dir = function() return vim.loop.cwd() end      -- run lsp for javascript in any directory
+  -- }
 
 local luasnip = require('luasnip')
 

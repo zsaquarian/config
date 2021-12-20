@@ -3,7 +3,7 @@ set fish_path $HOME/.local/share/omf/
 source ~/killport.fish
 source ~/copy.fish
 source ~/sync.fish
-alias vim nvim
+alias vim vmux
 alias cat bat
 alias gvim "neovide --multiGrid"
 alias xclip "xclip -selection clipboard"
@@ -28,6 +28,10 @@ set -x PATH /home/nahos/.cargo/bin $PATH
 set -x PATH /usr/local/go/bin $PATH
 set -x PATH /home/nahos/go/bin $PATH
 set -x PATH /home/nahos/Android/Sdk/platform-tools $PATH
+
+# add PKG_CONFIG_PATH
+set -x PKG_CONFIG_PATH /usr/lib/x86_64-linux-gnu/pkgconfig
+set -x PKG_CONFIG_PATH /usr/share/pkgconfig $PKG_CONFIG_PATH
 
 if status is-interactive
   mcfly init fish | source

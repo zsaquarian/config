@@ -26,7 +26,7 @@ font pango:DejaVu Sans Mono 9
 # screen before suspend. Use loginctl lock-session to lock your screen.
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-for_window [class="^.*"] border pixel 3
+for_window [class="^.*"] border pixel 0
 
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
@@ -39,7 +39,7 @@ exec --no-startup-id "udisksctl mount -b /dev/sda7"
 exec_always --no-startup-id ~/.config/polybar/launch.sh &
 
 # kde connect
-exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
+# exec --no-startup-id /usr/lib/x86_64-linux-gnu/libexec/kdeconnectd
 
 # bluetooth
 exec --no-startup-id blueman-applet
@@ -52,9 +52,6 @@ exec_always --no-startup-id "bash ~/dunst.sh"
 
 # night mode with warmer colors
 exec --no-startup-id "redshift-gtk"
-
-# kde connect indicator
-exec --no-startup-id "kdeconnect-indicator"
 
 # input methods
 exec --no-startup-id "ibus-daemon"
