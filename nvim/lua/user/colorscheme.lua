@@ -1,5 +1,6 @@
 vim.cmd [[
 let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_better_performance = 1
 
 try
   colorscheme gruvbox-material
